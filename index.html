@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Tanya vs Chiku | Sister Tic-Tac-Toe Showdown</title>
+  <meta name="description" content="Custom 2-player Tic-Tac-Toe game for sisters Tanya and Chiku with dynamic photos, festive animations, and interactive sound effects.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Fullscreen Background Layers for Seamless Fade Transitions -->
+  <div id="bg-default" class="fullscreen-bg active" aria-hidden="true"></div>
+  <div id="bg-tanya" class="fullscreen-bg" aria-hidden="true"></div>
+  <div id="bg-chiku" class="fullscreen-bg" aria-hidden="true"></div>
+  
+  <!-- Subtle Tint & Vignette Overlay to Guarantee High Contrast -->
+  <div class="bg-vignette" aria-hidden="true"></div>
+
+  <!-- Confetti Canvas for Celebratory Victory Effects -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="game-wrapper">
+    <!-- Top Bar with Branding & Quick Controls -->
+    <header class="game-header">
+      <div class="brand-title">
+        <span class="sparkle-icon">✨</span>
+        <h1>Sister Showdown</h1>
+        <span class="sparkle-icon">💖</span>
+      </div>
+      <p class="brand-subtitle">Tanya vs Chiku &bull; Tic-Tac-Toe</p>
+
+      <div class="header-controls">
+        <button id="sound-toggle-btn" class="icon-btn" aria-label="Toggle Sound" title="Toggle Sound">
+          <span id="sound-icon">🔊</span>
+        </button>
+        <button id="reset-scores-btn" class="icon-btn" aria-label="Reset Scores" title="Reset Scores">
+          <span>🏆</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Players Info & Scoreboard -->
+    <section class="players-section" aria-label="Player scoreboard">
+      <!-- Tanya (X) Card -->
+      <div id="player-card-x" class="player-card player-tanya active-player">
+        <div class="avatar-ring">
+          <img src="tanya.jpg" alt="Tanya" class="player-avatar" onerror="this.src='tanya.jpg.jpeg'">
+          <span class="symbol-badge badge-x">X</span>
+        </div>
+        <div class="player-info">
+          <h2 class="player-name">Tanya</h2>
+          <span class="player-role">Player 1 (X)</span>
+          <div class="score-pill">
+            <span class="score-label">Score</span>
+            <span id="score-tanya" class="score-val">0</span>
+          </div>
+        </div>
+        <div class="active-pulse-indicator" title="Active Turn"></div>
+      </div>
+
+      <!-- VS / Stats Badge -->
+      <div class="vs-container">
+        <div class="vs-circle">VS</div>
+        <div class="draw-badge" title="Tied Games">
+          <span>Draws: </span><strong id="score-draws">0</strong>
+        </div>
+      </div>
+
+      <!-- Chiku (O) Card -->
+      <div id="player-card-o" class="player-card player-chiku">
+        <div class="avatar-ring">
+          <img src="chiku.jpg" alt="Chiku" class="player-avatar" onerror="this.src='chiku.jpg.jpeg'">
+          <span class="symbol-badge badge-o">O</span>
+        </div>
+        <div class="player-info">
+          <h2 class="player-name">Chiku</h2>
+          <span class="player-role">Player 2 (O)</span>
+          <div class="score-pill">
+            <span class="score-label">Score</span>
+            <span id="score-chiku" class="score-val">0</span>
+          </div>
+        </div>
+        <div class="active-pulse-indicator" title="Active Turn"></div>
+      </div>
+    </section>
+
+    <!-- Active Turn / Win Announcement Banner -->
+    <section class="banner-section">
+      <div id="status-banner" class="status-banner banner-tanya" role="status" aria-live="polite">
+        <span id="banner-icon" class="banner-icon">🌸</span>
+        <span id="banner-text" class="banner-text">Tanya's Turn (X)</span>
+      </div>
+    </section>
+
+    <!-- 3x3 Game Board Grid -->
+    <main class="board-container">
+      <div id="game-board" class="game-board" role="grid" aria-label="Tic Tac Toe 3 by 3 Grid">
+        <!-- SVG Strike Line Overlay for Winning Combination -->
+        <svg id="strike-svg" class="strike-svg" aria-hidden="true">
+          <line id="strike-line" x1="0" y1="0" x2="0" y2="0" class="strike-line" />
+        </svg>
+
+        <button class="cell" data-index="0" role="gridcell" aria-label="Square 1" tabindex="0">
+          <span class="cell-overlay"></span>
+          <span class="cell-content"></span>
+        </button>
+        <button class="cell" data-index="1" role="gridcell" aria-label="Square 2" tabindex="0">
+          <span class="cell-overlay"></span>
+          <span class="cell-content"></span>
+        </button>
+        <button class="cell" data-index="2" role="gridcell" aria-label="Square 3" tabindex="0">
+          <span class="cell-overlay"></span>
+          <span class="cell-content"></span>
+        </button>
+        <button class="cell" data-index="3" role="gridcell" aria-label="Square 4" tabindex="0">
+          <span class="cell-overlay"></span>
+          <span class="cell-content"></span>
+        </button>
+        <button class="cell" data-index="4" role="gridcell" aria-label="Square 5" tabindex="0">
+          <span class="cell-overlay"></span>
+          <span class="cell-content"></span>
+        </button>
+        <button class="cell" data-index="5" role="gridcell" aria-label="Square 6" tabindex="0">
+          <span class="cell-overlay"></span>
+          <span class="cell-content"></span>
+        </button>
+        <button class="cell" data-index="6" role="gridcell" aria-label="Square 7" tabindex="0">
+          <span class="cell-overlay"></span>
+          <span class="cell-content"></span>
+        </button>
+        <button class="cell" data-index="7" role="gridcell" aria-label="Square 8" tabindex="0">
+          <span class="cell-overlay"></span>
+          <span class="cell-content"></span>
+        </button>
+        <button class="cell" data-index="8" role="gridcell" aria-label="Square 9" tabindex="0">
+          <span class="cell-overlay"></span>
+          <span class="cell-content"></span>
+        </button>
+      </div>
+    </main>
+
+    <!-- Action Buttons -->
+    <footer class="game-actions">
+      <button id="restart-btn" class="restart-btn" aria-label="Restart Game">
+        <span class="btn-icon">🔄</span>
+        <span class="btn-text">Restart Game</span>
+      </button>
+    </footer>
+
+    <!-- Celebration Modal (Appears with grand flair on victory / draw) -->
+    <div id="victory-modal" class="victory-modal" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <div id="modal-badge-wrapper" class="modal-badge-wrapper">
+          <img id="modal-winner-avatar" src="tanya.jpg" alt="Winner" class="modal-winner-avatar">
+          <span id="modal-winner-symbol" class="modal-winner-symbol">🏆</span>
+        </div>
+        <h2 id="modal-title" class="modal-title">🎉 Tanya Wins! 🎉</h2>
+        <p id="modal-desc" class="modal-desc">Brilliant victory in the sister showdown!</p>
+        <div class="modal-actions">
+          <button id="modal-play-again-btn" class="modal-primary-btn">
+            <span>✨ Play Again ✨</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
